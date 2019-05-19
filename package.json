@@ -15,7 +15,8 @@
     "masonry-layout": "^4.2.2",
     "vue": "^2.6.6",
     "vue-color": "^2.7.0",
-    "vue-swatches": "^1.0.3"
+    "vue-swatches": "^1.0.3",
+    "tar": ">=4.4.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.5.0",
