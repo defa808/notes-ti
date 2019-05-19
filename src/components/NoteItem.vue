@@ -10,7 +10,7 @@
       <i class="far fa-edit"></i>
     </span>
     <span class="delete-note" @click="$parent.$parent.deleteNote(note.id)">x</span>
-    <span>{{ note.text }}</span>
+    <span v-html="showNoteTextWithTags"></span>
   </div>
 </template>
 
@@ -21,6 +21,35 @@ export default {
     note: {
       type: Object,
       required: true
+    }
+  },
+
+  sayHello() {
+    console.log("hello");
+  },
+
+  getTags(textNote) {
+    let tags = textNote.match(/(?:|^)#[A-Za-z0-9\-\.\_]+\b/g);
+    return tags != null ? tags : [];
+  },
+
+  mounted: function() {
+    var elements = this.$el.querySelectorAll("a");
+    let that = this;
+    elements.forEach(el => {
+      el.onclick = () => {
+        that.$parent.$parent.setFilterByHashTag(el.innerText);
+      };
+    });
+  },
+
+  computed: {
+    showNoteTextWithTags() {
+      let noteText = this.note.text;
+      this.note.tags.forEach(tag => {
+        noteText = noteText.replace(tag, `<a href='#'  >${tag}</a>`);
+      });
+      return noteText;
     }
   }
 };
@@ -38,6 +67,7 @@ export default {
   transition: box-shadow 0.3s;
   word-wrap: break-word;
   position: relative;
+  padding-right: 30px;
 }
 
 .note:hover {
@@ -69,5 +99,4 @@ export default {
 .note:hover .edit-note {
   display: block;
 }
-
 </style>

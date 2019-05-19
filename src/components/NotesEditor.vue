@@ -1,16 +1,26 @@
 <template>
   <div class="note-editor">
-    <textarea v-model="text" placeholder="Enter your note here ..." rows="5"/>
+    <textarea v-model="currentNoteData.text" placeholder="Enter your note here ..." rows="5"/>
     <div class="optionTools">
       <swatches
         class="colorPicker"
         @input="inputedColor"
-        v-model="colors"
+        v-model="currentNoteData.bgcolor"
         show-fallback
         colors="text-advanced"
         popover-to="left"
       ></swatches>
-      <button class="add-button" @click="createNote" :disabled="text.trim().length == 0">Add</button>
+      <button
+        class="button"
+        @click="createNote"
+        :disabled="currentNote.text.trim().length == 0"
+      >Add</button>
+      <button
+        class="button cancel-button"
+        @click="cancelNote"
+        v-if="$parent.findNoteById(currentNoteData.id)" 
+        :disabled="currentNote.text.trim().length == 0"
+      >Cancel</button>
     </div>
     <!-- <photoshop-picker v-model="colors"/> -->
   </div>
@@ -27,39 +37,44 @@ export default {
     Swatches
   },
 
-  data: () => ({
-    text: "",
-    colors: ""
-  }),
+  data: function() {
+    return {
+      currentNoteData: this.currentNote
+    };
+  },
 
   props: {
-    note: { type: Object, required: false },
     currentNote: { type: Object }
   },
 
   methods: {
     createNote() {
-      if (this.colors == "" || !this.colorInputed) {
-        let getRandom = () => Math.floor(Math.random() * 255);
-        this.colors = `rgb(${getRandom()},${getRandom()},${getRandom()})`;
+      if (this.currentNoteData.text == "") return;
+      if (this.currentNoteData.id == undefined) {
+        this.currentNoteData.id = new Date().getTime();
+        if (this.currentNoteData.bgcolor == "" || !this.colorInputed) {
+          let getRandom = () => Math.floor(Math.random() * 255);
+          this.currentNoteData.bgcolor = `rgb(${getRandom()},${getRandom()},${getRandom()})`;
+        }
       }
-      if (this.currentNote != undefined) {
-        this.currentNote.text = this.text;
-        this.currentNote.bgcolor = this.colors;
-      } else {
-        const note = {
-          id: new Date().getTime(),
-          text: this.text,
-          bgcolor: this.colors
-        };
-
-        this.$emit("createNote", note);
-      }
-      this.text = "";
+      this.currentNoteData.tags = this.getTags(this.currentNoteData.text);
+      this.$emit("createNote", this.currentNoteData);
+      this.currentNoteData = { id: undefined, text: "" };
+      if (!this.colorInputed) this.currentNoteData.bgcolor = "";
     },
+
+    cancelNote() {
+      this.currentNoteData = { id: undefined, text: "" };
+    },
+
     inputedColor() {
       if (this.colors === "") this.colorInputed = false;
       else this.colorInputed = true;
+    },
+
+    getTags(textNote) {
+      let tags = textNote.match(/(?:|^)#[A-Za-z0-9\-\.\_]+\b/g);
+      return tags != null ? tags : [];
     }
   }
 };
@@ -91,11 +106,11 @@ textarea:focus {
   outline: 0;
 }
 
-.add-button:disabled {
+.button:disabled {
   background: #2f6627;
 }
 
-.add-button {
+.button {
   align-self: flex-end;
   width: 100px;
   margin-left: 50px;
@@ -111,17 +126,21 @@ textarea:focus {
   text-shadow: 0px 1px 0px #2f6627;
 }
 
-.add-button:hover {
+.button:hover {
   background-color: #5cbf2a;
 }
 
-.add-button:active {
+.button:active {
   position: relative;
   top: 1px;
 }
 
-.add-button:focus {
+.button:focus {
   outline: 0;
+}
+
+.cancel-button{
+  margin-left: 20px;
 }
 
 .colorPicker {

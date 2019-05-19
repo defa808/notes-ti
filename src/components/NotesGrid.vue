@@ -1,6 +1,6 @@
 <template>
   <div class="notes-grid" ref="grid">
-    <note-item v-for="note in notes" :key="note.id" :note="note"/>
+    <note-item v-for="note in notes" :key="note.id" :note="note" @setFilterByHashTag="setFilterByHashTag"/>
   </div>
 </template>
 
@@ -26,6 +26,12 @@ export default {
       isFitWidth: true
     });
   },
+  methods: {
+    setFilterByHashTag(hashTag) {
+      this.$emit("setFilterByHashTag", hashTag);
+    }
+  },
+
   updated() {
     this.msnry.reloadItems();
     this.msnry.layout();
