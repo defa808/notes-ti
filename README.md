@@ -1,3 +1,14 @@
+# Demo
+## Add Notes
+![](https://github.com/defa808/notes-ti/blob/master/demogifs/AddNotes.gif)
+
+## Edit Notes
+![](https://github.com/defa808/notes-ti/blob/master/demogifs/EditNotes.gif)
+
+## Filter Notes by Hashtags
+![](https://github.com/defa808/notes-ti/blob/master/demogifs/FilterNotes.gif)
+
+
 # nodes-ti
 
 ## Project setup
