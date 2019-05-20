@@ -24,10 +24,6 @@ export default {
     }
   },
 
-  sayHello() {
-    console.log("hello");
-  },
-
   getTags(textNote) {
     let tags = textNote.match(/(?:|^)#[A-Za-z0-9\-\.\_]+\b/g);
     return tags != null ? tags : [];
